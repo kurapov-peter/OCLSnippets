@@ -1,4 +1,4 @@
 
 add_kernel(constant)
 add_executable(constant constant.cpp)
-target_link_libraries(constant PRIVATE common)
+target_link_libraries(constant PRIVATE common Boost::program_options)

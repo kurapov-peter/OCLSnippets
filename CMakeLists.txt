@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCL REQUIRED)
+find_package(Boost COMPONENTS program_options REQUIRED)
 
 function(add_kernel name)
   configure_file(${name}.cl ${CMAKE_CURRENT_BINARY_DIR}/${name}.cl COPYONLY)
