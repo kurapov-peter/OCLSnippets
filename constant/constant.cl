@@ -1,0 +1,1 @@
+void kernel constant_kernel(global int *a, global int *b) { b[0] = 42; }
