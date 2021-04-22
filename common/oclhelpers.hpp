@@ -3,6 +3,18 @@
 #include <stdexcept>
 #include <string>
 
+#define OCL_SAFE_CALL(call)                                                    \
+  {                                                                            \
+    auto status = (call);                                                      \
+    if (status) {                                                              \
+      std::stringstream ss;                                                    \
+      ss << "OpenCL error: " << std::hex << (int)status << " " << std::dec     \
+         << "(" << oclhelpers::get_error_string((int)status) << ")\n\tat "     \
+         << __FILE__ << ":" << __LINE__ << std::endl;                          \
+      throw oclhelpers::OCLHelpersException(ss.str());                         \
+    }                                                                          \
+  }
+
 namespace oclhelpers {
 
 class OCLHelpersException : public std::runtime_error {
@@ -46,5 +58,6 @@ inline void _set_args(cl::Kernel &k, int pos, const T &arg,
 template <class... Ts> inline void set_args(cl::Kernel &k, const Ts &... args) {
   _set_args(k, 0, args...);
 }
+std::string get_error_string(int error);
 
 } // namespace oclhelpers

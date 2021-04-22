@@ -23,20 +23,20 @@ void run_kernel(const std::string &filename) {
   std::vector<int> dst_data = {-1};
 
   cl::CommandQueue queue(ctx, device);
-  queue.enqueueWriteBuffer(src, CL_TRUE, 0, sizeof(int) * buffer_size,
-                           src_data.data());
-  queue.enqueueWriteBuffer(dst, CL_TRUE, 0, sizeof(int) * buffer_size,
-                           dst_data.data());
+  OCL_SAFE_CALL(queue.enqueueWriteBuffer(
+      src, CL_TRUE, 0, sizeof(int) * buffer_size, src_data.data()));
+  OCL_SAFE_CALL(queue.enqueueWriteBuffer(
+      dst, CL_TRUE, 0, sizeof(int) * buffer_size, dst_data.data()));
   cl::Kernel kernel = cl::Kernel(program, "constant_kernel");
   ocl::set_args(kernel, src, dst);
 
-  queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1),
-                             cl::NullRange);
-  queue.enqueueReadBuffer(src, CL_TRUE, 0, sizeof(int) * buffer_size,
-                          src_data.data());
-  queue.enqueueReadBuffer(dst, CL_TRUE, 0, sizeof(int) * buffer_size,
-                          dst_data.data());
-  queue.finish();
+  OCL_SAFE_CALL(queue.enqueueNDRangeKernel(kernel, cl::NullRange,
+                                           cl::NDRange(1), cl::NullRange));
+  OCL_SAFE_CALL(queue.enqueueReadBuffer(
+      src, CL_TRUE, 0, sizeof(int) * buffer_size, src_data.data()));
+  OCL_SAFE_CALL(queue.enqueueReadBuffer(
+      dst, CL_TRUE, 0, sizeof(int) * buffer_size, dst_data.data()));
+  OCL_SAFE_CALL(queue.finish());
 
   std::cout << "Got result: " << dst_data[0] << "\n"
             << "Expected: 42\n"
