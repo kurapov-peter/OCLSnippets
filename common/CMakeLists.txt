@@ -1,2 +1,2 @@
-add_library(common oclhelpers.cpp)
-target_link_libraries(common PUBLIC OpenCL::OpenCL)
+add_library(common common.h)
+target_link_libraries(common PUBLIC OpenCL::OpenCL oclhelpers::oclhelpers)
