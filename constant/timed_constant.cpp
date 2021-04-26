@@ -1,3 +1,4 @@
+#define CL_VERSION_1_2
 #include <common/common.h>
 #include <iostream>
 #include <tuple>
@@ -24,8 +25,9 @@ void run_kernel(const std::string &filename) {
   std::vector<int> dst_data = {-1};
 
   cl_int queue_err;
-  cl_command_queue_properties props{CL_QUEUE_PROFILING_ENABLE};
-  cl::CommandQueue queue(ctx, device, &props, &queue_err);
+  cl_command_queue_properties props[3] = {CL_QUEUE_PROPERTIES,
+                                          CL_QUEUE_PROFILING_ENABLE, 0};
+  cl::CommandQueue queue(ctx, device, props, &queue_err);
   if (queue_err != CL_SUCCESS) {
     std::cerr << "Queue creation error: ";
     std::cerr << ocl::get_error_string(queue_err) << std::endl;
@@ -72,6 +74,8 @@ void run_kernel(const std::string &filename) {
     std::cerr << ocl::get_error_string(profiling_error1) << " & ";
     std::cerr << ocl::get_error_string(profiling_error2) << std::endl;
   }
+
+  std::cout << "Execution time: " << exe_time << "ns" << std::endl;
 
   std::cout << "Got result: " << dst_data[0] << "\n"
             << "Expected: 42\n"
