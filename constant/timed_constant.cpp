@@ -33,7 +33,6 @@ void run_kernel(const std::string &filename) {
     std::cerr << ocl::get_error_string(queue_err) << std::endl;
   }
 
-  //   auto event = std::make_unique<cl::Event>();
   cl::Event event;
   OCL_SAFE_CALL(queue.enqueueWriteBuffer(
       src, CL_TRUE, 0, sizeof(int) * buffer_size, src_data.data()));
@@ -53,8 +52,6 @@ void run_kernel(const std::string &filename) {
 
   auto status = event.getInfo<CL_EVENT_COMMAND_EXECUTION_STATUS>();
 
-  // cl_int status;
-  // event.getInfo(CL_EVENT_COMMAND_EXECUTION_STATUS, &status);
   if (status != CL_COMPLETE) {
     std::cout << "Status is " << status << " " << ocl::get_error_string(status)
               << " (should be CL_COMPLETE)";
@@ -65,10 +62,7 @@ void run_kernel(const std::string &filename) {
   auto exe_time =
       event.getProfilingInfo<CL_PROFILING_COMMAND_END>(&profiling_error1) -
       event.getProfilingInfo<CL_PROFILING_COMMAND_START>(&profiling_error2);
-  // cl_ulong start, end;
-  // profiling_error1 = event.getProfilingInfo(CL_PROFILING_COMMAND_START,
-  // &start); profiling_error2 =
-  // event.getProfilingInfo(CL_PROFILING_COMMAND_END, &end);
+
   if (profiling_error1 != CL_SUCCESS || profiling_error2 != CL_SUCCESS) {
     std::cerr << "Got profiling error: ";
     std::cerr << ocl::get_error_string(profiling_error1) << " & ";
